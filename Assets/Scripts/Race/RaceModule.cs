@@ -19,6 +19,7 @@ public class RaceModule : Module
     private Car player;
     private GameObject startPos;
     private GameObject endPos;
+    private TrackController trackController;
 
     public override void OnRegister()
     {
@@ -35,7 +36,11 @@ public class RaceModule : Module
 
         startPos = root.FindChildByName("StartPoint");
         endPos = root.FindChildByName("EndPoint");
-        var endCollider = endPos.GetComponent<Collider2D>();        
+        var endCollider = endPos.GetComponent<Collider2D>();
+
+        trackController = root.FindChildByName("Track").GetComponent<TrackController>();
+        trackController.Setup();
+
         StartRace();
 
         isInitialized = true;

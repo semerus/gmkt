@@ -68,16 +68,16 @@ public class RoadNode : MonoBehaviour
         var planeRotation = new Vector3(0f, angle, 0f);
         plane.transform.localEulerAngles = planeRotation;
 
-        // adjust barriers
+        // adjust barriers (코너 때문에 일단 조금 적게 콜라이더 설정해둔다)
         leftBarrier.transform.position = midPoint;
         leftBarrier.transform.localEulerAngles = planeRotation;
         leftBarrier.transform.localScale =
-            leftBarrier.transform.localScale.OverrideZ(plane.transform.localScale.z * 10f);
+            leftBarrier.transform.localScale.OverrideZ(plane.transform.localScale.z * 9.5f);
 
         rightBarrier.transform.localEulerAngles = planeRotation;
         rightBarrier.transform.position = midPoint;
         rightBarrier.transform.localScale =
-            rightBarrier.transform.localScale.OverrideZ(plane.transform.localScale.z * 10f);
+            rightBarrier.transform.localScale.OverrideZ(plane.transform.localScale.z * 9.5f);
     }
 
     static Vector2 Convert(Vector3 vector)
