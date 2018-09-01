@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class PopupMsg : MessageCore
 {
     public string Message;
+    public string ButtonMessage;
     public Action OnClick;
 }
 
@@ -53,6 +54,9 @@ public class UIModule : Module
             commonButton.onClick.RemoveAllListeners();
             commonButton.onClick.AddListener(() => msg.OnClick());
             commonButton.onClick.AddListener(ClosePopup);
+            var buttonText = commonButton.GetComponentInChildren<Text>();
+            buttonText.text = msg.ButtonMessage;
+            commonButton.gameObject.SetActive(true);
         }
         else
         {

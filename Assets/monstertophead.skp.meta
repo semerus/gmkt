@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: ccc352c3b89c45a43bde3fbb688f9c06
-timeCreated: 1535766256
+guid: 3c28ce98a9dea9848ae58fed25e73ed6
+timeCreated: 1535797220
 licenseType: Free
 SketchUpImporter:
   generateBackFace: 0
@@ -8,16 +8,16 @@ SketchUpImporter:
   selectedNodes: 0000000001000000
   assetHash:
     serializedVersion: 2
-    Hash: 740970df5e899bdf88d3e05cb6b648f7
+    Hash: 5f70e5276b5a7dd9d420ffa71afa0466
   longitude: 127
   latitude: 37.5
   northCorrection: -0
   fileUnit: 0
   sketchUpImportData:
     defaultCamera:
-      position: {x: 1.7863626, y: 0.011605552, z: 7.6612563}
-      lookAt: {x: 1.2906144, y: 1.1178826, z: -6.1920853}
-      up: {x: 0.0028449956, y: 0.9968307, z: 0.079501435}
+      position: {x: 6.0516834, y: 1.5885221, z: -3.9592862}
+      lookAt: {x: -2.8215315, y: 0.2806066, z: 6.6680417}
+      up: {x: -0.060279272, y: 0.99556726, z: 0.07219566}
       fov: 35
       aspectRatio: 0
       orthoSize: 1
@@ -25,17 +25,12 @@ SketchUpImporter:
     scenes: []
   serializedVersion: 22
   fileIDToRecycleName:
-    100000: Group 1
-    100002: //RootNode
-    400000: Group 1
-    400002: //RootNode
+    100000: //RootNode
+    400000: //RootNode
     2100000: _defaultMat
-    2300000: Group 1
-    2300002: //RootNode
-    3300000: Group 1
-    3300002: //RootNode
-    4300000: Mesh Group 1
-    4300002: Mesh Pinetree
+    2300000: //RootNode
+    3300000: //RootNode
+    4300000: Mesh monstertophead
   externalObjects: {}
   materials:
     importMaterials: 1

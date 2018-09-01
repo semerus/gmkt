@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using GiraffeStar;
 
@@ -51,12 +52,17 @@ public class RaceModule : Module
     void StartRace()
     {
         Reset();
-        ghost.SetLoose();
+        player.StartCar();
 
-        new PopupMsg()
+        DOVirtual.DelayedCall(0.2f, () =>
         {
-            Message = "Run For Your Life",
-        }.Dispatch();
+            new PopupMsg()
+            {
+                Message = "Run For Your Life Hank!!",
+            }.Dispatch();
+        });
+
+        DOVirtual.DelayedCall(3f, () => { ghost.SetLoose(); });
     }
 
     void Reset()
@@ -64,20 +70,28 @@ public class RaceModule : Module
         // 이부분도 나중에 플레이어로 옮겨놓기
         player.transform.position = startPos.transform.position.OverrideY(0.5f);
         player.transform.localEulerAngles = new Vector3(0f, 180f, 0f);
-
         ghost.Reset();
     }
 
     void EndRace()
     {
         Debug.Log("Race Ended");
-        Reset();
+        //Reset();
+        player.StopCar();
+        ghost.StopGhost();
     }
 
     [Subscriber]
     void OnCrashBarrier(BarrierCrashMsg msg)
     {
         EndRace();
+
+        new PopupMsg()
+        {
+            Message = "You crashed. Click Button to restart",
+            ButtonMessage = "Restart",
+            OnClick = StartRace,
+        }.Dispatch();
     }
 
     [Subscriber]

@@ -61,9 +61,22 @@ public class Car : MonoBehaviour, ITimeHandler
         transform.Translate(Vector3.back * actualForce);
     }
 
+    public void StartCar()
+    {
+        if (inputHandler != null)
+        {
+            inputHandler.enabled = true;
+        }
+    }
+
     public void StopCar()
     {
+        if (inputHandler != null)
+        {
+            inputHandler.enabled = false;
+        }
 
+        rawForcePerFrame = Vector3.zero;
     }
 
     public void BlinkCar()

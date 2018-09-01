@@ -9,6 +9,7 @@ public class Ghost : MonoBehaviour, ITimeHandler
     private Vector3 targetPosition;
     private TrackController trackController;
     private int currentCheckPointIndex;
+    private Tween movingTween;
 
     void Start()
     {
@@ -16,8 +17,15 @@ public class Ghost : MonoBehaviour, ITimeHandler
         trackController = root.FindChildByName("Track").GetComponent<TrackController>();
     }
 
+
+    void OnTriggerEnter()
+    {
+
+    }
+
     public void RunTime()
     {
+
     }
 
     public void Reset()
@@ -27,11 +35,19 @@ public class Ghost : MonoBehaviour, ITimeHandler
             var raceModule = GiraffeSystem.FindModule<RaceModule>();
             trackController = raceModule.TrackController;
         }
+
+        if (movingTween != null)
+        {
+            movingTween.Kill();
+        }
+        currentCheckPointIndex = 0;
         transform.position = trackController.StartGo.transform.position;
+        gameObject.SetActive(false);
     }
 
     public void SetLoose()
     {
+        gameObject.SetActive(true);
         if (trackController.checkPoints.Count > 0)
         {
             currentCheckPointIndex = 0;
@@ -48,9 +64,10 @@ public class Ghost : MonoBehaviour, ITimeHandler
 
     void RunToTarget()
     {
+        transform.LookAt(targetPosition);
         var distance = Vector3.Distance(targetPosition, transform.position);
-        var tween = transform.DOMove(targetPosition, distance * SpeedPerUnit);
-        tween.OnComplete(() =>
+        movingTween = transform.DOMove(targetPosition, distance * SpeedPerUnit);
+        movingTween.OnComplete(() =>
         {
             if (currentCheckPointIndex < trackController.checkPoints.Count - 1)
             {
@@ -68,5 +85,13 @@ public class Ghost : MonoBehaviour, ITimeHandler
             }
             // 종료
         });
+    }
+
+    public void StopGhost()
+    {
+        if (movingTween != null)
+        {
+            movingTween.Kill();
+        }
     }
 }
