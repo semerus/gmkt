@@ -72,12 +72,12 @@ public class RoadNode : MonoBehaviour
         leftBarrier.transform.position = midPoint;
         leftBarrier.transform.localEulerAngles = planeRotation;
         leftBarrier.transform.localScale =
-            leftBarrier.transform.localScale.OverrideZ(plane.transform.localScale.z * 9.5f);
+            leftBarrier.transform.localScale.OverrideZ(plane.transform.localScale.z * 10f);
 
         rightBarrier.transform.localEulerAngles = planeRotation;
         rightBarrier.transform.position = midPoint;
         rightBarrier.transform.localScale =
-            rightBarrier.transform.localScale.OverrideZ(plane.transform.localScale.z * 9.5f);
+            rightBarrier.transform.localScale.OverrideZ(plane.transform.localScale.z * 10f);
     }
 
     static Vector2 Convert(Vector3 vector)

@@ -2,12 +2,23 @@
 
 public class Car : MonoBehaviour, ITimeHandler
 {
+    public bool UseAddForce = false;
+
+    // translation mode
+    [Header("Translation Mode")]
     public float AccelerationFactor = 1f;
     public float RotationFactor;
     public float FrictionFactor = 1f;
     public float MaxTranslationForce;
 
+    [Header("AddForce Mode")]
+    public float ForceMultiplier = 1f;
+    public float MaximumVelocity = 10f;
+
+
     private InputHandler inputHandler;
+    public RaceCamera playerCamera { get; private set; }
+    private Rigidbody rigidbody;
 
     private Vector3 rawForcePerFrame;
     private Vector3 momentum;
@@ -15,6 +26,7 @@ public class Car : MonoBehaviour, ITimeHandler
     private float frameRotationForce;
     private float actualForce;
     private float lastEnergy;
+    private float magnitude;
 
     void Start()
     {
@@ -26,12 +38,22 @@ public class Car : MonoBehaviour, ITimeHandler
         inputHandler.OnLeftKey = () => { AddForce(Vector3.left); };
         inputHandler.OnRightKey = () => { AddForce(Vector3.right); };
 
+        playerCamera = gameObject.GetComponentInChildren<RaceCamera>();
+        rigidbody = gameObject.GetComponentInChildren<Rigidbody>();
+
         inputHandler.OnInputFinish = ProcessForce;
     }
 
     public void RunTime()
     {
-        DriveUsingTranslation();
+        if (UseAddForce)
+        {
+            DriveUsingAddForce();
+        }
+        else
+        {
+            DriveUsingTranslation();
+        }
     }
 
     void AddForce(Vector3 direction)
@@ -42,6 +64,7 @@ public class Car : MonoBehaviour, ITimeHandler
 
     void ProcessForce()
     {
+        // translation mode
         frameAccelerationForce = Mathf.Abs(rawForcePerFrame.z * AccelerationFactor);
         frameRotationForce = rawForcePerFrame.x * RotationFactor;
 
@@ -52,6 +75,13 @@ public class Car : MonoBehaviour, ITimeHandler
         actualForce = Mathf.Max(0f, Mathf.Min(lastEnergy * FrictionFactor + frameAccelerationForce, MaxTranslationForce));
         lastEnergy = actualForce;
 
+        // momentum mode
+        var normalized = rawForcePerFrame.normalized;
+
+        magnitude = Vector3.Magnitude(rawForcePerFrame * ForceMultiplier);
+        magnitude = Mathf.Min(MaximumVelocity, magnitude);
+        momentum = normalized * magnitude;
+
         rawForcePerFrame = Vector3.zero;
     }
 
@@ -61,12 +91,25 @@ public class Car : MonoBehaviour, ITimeHandler
         transform.Translate(Vector3.back * actualForce);
     }
 
+    void DriveUsingAddForce()
+    {
+        transform.Rotate(new Vector3(0f, -frameRotationForce * 10f, 0f));
+        rigidbody.AddForce(-transform.forward * magnitude);
+    }
+
     public void StartCar()
     {
         if (inputHandler != null)
         {
             inputHandler.enabled = true;
         }
+
+        if (playerCamera == null)
+        {
+            playerCamera = gameObject.GetComponentInChildren<RaceCamera>();
+        }
+
+        playerCamera.ChangeToPlayingMode();
     }
 
     public void StopCar()
@@ -75,7 +118,6 @@ public class Car : MonoBehaviour, ITimeHandler
         {
             inputHandler.enabled = false;
         }
-
         rawForcePerFrame = Vector3.zero;
     }
 

@@ -18,9 +18,12 @@ public class Ghost : MonoBehaviour, ITimeHandler
     }
 
 
-    void OnTriggerEnter()
+    void OnTriggerEnter(Collider other)
     {
-
+        if (other.gameObject.tag == "Player")
+        {
+            new EatenByGhostMsg().Dispatch();
+        }
     }
 
     public void RunTime()

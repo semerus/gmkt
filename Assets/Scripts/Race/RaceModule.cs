@@ -12,6 +12,10 @@ public class BarrierCrashMsg : MessageCore
 {
 }
 
+public class EatenByGhostMsg : MessageCore
+{
+}
+
 public class RaceModule : Module
 {
     private bool isInitialized;
@@ -70,6 +74,8 @@ public class RaceModule : Module
         // 이부분도 나중에 플레이어로 옮겨놓기
         player.transform.position = startPos.transform.position.OverrideY(0.5f);
         player.transform.localEulerAngles = new Vector3(0f, 180f, 0f);
+        player.gameObject.SetActive(true);
+
         ghost.Reset();
     }
 
@@ -89,6 +95,22 @@ public class RaceModule : Module
         new PopupMsg()
         {
             Message = "You crashed. Click Button to restart",
+            ButtonMessage = "Restart",
+            OnClick = StartRace,
+        }.Dispatch();
+    }
+
+    [Subscriber]
+    void OnEatenByGhost(EatenByGhostMsg msg)
+    {
+        EndRace();
+        player.playerCamera.ChangeToDeadMode();
+        
+        player.gameObject.SetActive(false);
+
+        new PopupMsg()
+        {
+            Message = "Hank met his doom ㅜ_ㅜ",
             ButtonMessage = "Restart",
             OnClick = StartRace,
         }.Dispatch();
