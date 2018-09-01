@@ -49,7 +49,7 @@ public class TrackController : MonoBehaviour
 
 #if UNITY_EDITOR
 [CustomEditor(typeof(TrackController))]
-public class MapContollerInspector : Editor
+public class TrackControllerInspector : Editor
 {
     public override void OnInspectorGUI()
     {

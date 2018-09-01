@@ -10,6 +10,5 @@ public class FirstAwake : MonoBehaviour {
 
 
         // 임시!!!
-        GiraffeSystem.Register(new RaceModule());
     }
 }

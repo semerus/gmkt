@@ -47,7 +47,7 @@ public class Car : MonoBehaviour, ITimeHandler
 
         if (lastEnergy * FrictionFactor + frameAccelerationForce > MaxTranslationForce)
         {
-            Debug.Log("Reached maximum velocity");
+            //Debug.Log("Reached maximum velocity");
         }
         actualForce = Mathf.Max(0f, Mathf.Min(lastEnergy * FrictionFactor + frameAccelerationForce, MaxTranslationForce));
         lastEnergy = actualForce;
@@ -57,10 +57,6 @@ public class Car : MonoBehaviour, ITimeHandler
 
     void DriveUsingTranslation()
     {
-        if (actualForce > 0f)
-        {
-            //Debug.Log("current speed" + actualForce);
-        }
         transform.Rotate(new Vector3(0f, -frameRotationForce * 10f, 0f));
         transform.Translate(Vector3.back * actualForce);
     }

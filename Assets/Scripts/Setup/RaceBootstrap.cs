@@ -18,7 +18,9 @@ public class RaceBootstrap
     {
         Config.Init();
         GiraffeSystem.Init();
-        
+
+        InitPlugins();
+        InitModules();
     }
 
     void InitPlugins()
@@ -28,6 +30,7 @@ public class RaceBootstrap
 
     void InitModules()
     {
-
+        GiraffeSystem.Register(new UIModule());
+        GiraffeSystem.Register(new RaceModule());
     }
 }
