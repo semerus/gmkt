@@ -3544,7 +3544,12 @@ Prefab:
     - target: {fileID: 114209497785055214, guid: 8af67c5f11142d740a9f1cb48fe1e6a3,
         type: 2}
       propertyPath: SpeedIncreaser
-      value: 0.965
+      value: 0.96
+      objectReference: {fileID: 0}
+    - target: {fileID: 114209497785055214, guid: 8af67c5f11142d740a9f1cb48fe1e6a3,
+        type: 2}
+      propertyPath: SpeedPerUnit
+      value: 0.15
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 8af67c5f11142d740a9f1cb48fe1e6a3, type: 2}
@@ -6782,7 +6787,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2098367497
 RectTransform:
   m_ObjectHideFlags: 0

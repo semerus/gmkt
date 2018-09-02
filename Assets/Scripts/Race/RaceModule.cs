@@ -127,7 +127,7 @@ public class RaceModule : Module
 
         new PopupMsg()
         {
-            Message = "Hank met his doom ㅜ_ㅜ",
+            Message = "Hank met his doom",
             ButtonMessage = "Restart",
             OnClick = StartRace,
         }.Dispatch();
@@ -141,6 +141,6 @@ public class RaceModule : Module
 
     public void IncreaseDifficulty()
     {
-        ghost.SpeedIncreaser = ghost.SpeedIncreaser * 0.99f;
+        ghost.SpeedPerUnit = ghost.SpeedPerUnit * 0.9f;
     }
 }
