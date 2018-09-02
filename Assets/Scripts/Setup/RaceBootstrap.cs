@@ -32,5 +32,6 @@ public class RaceBootstrap
     {
         GiraffeSystem.Register(new UIModule());
         GiraffeSystem.Register(new RaceModule());
+        GiraffeSystem.Register(new TutorialModule());
     }
 }

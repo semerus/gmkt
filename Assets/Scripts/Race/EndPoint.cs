@@ -5,11 +5,14 @@ public class EndPoint : MonoBehaviour
 {
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Race End!!");
-
-        new PopupMsg()
+        if (other.transform.tag == "Player")
         {
-            Message = "Well Done!! You escaped!!",
-        }.Dispatch();
+            Debug.Log("Race End!!");
+
+            new PopupMsg()
+            {
+                Message = "Well Done!! You escaped!!",
+            }.Dispatch();
+        }
     }
 }

@@ -48,7 +48,7 @@ public class RaceModule : Module
         TrackController.Setup();
         ghost = root.FindChildByName("Ghost").GetComponent<Ghost>();
 
-        StartRace();
+        //StartRace();
 
         isInitialized = true;
     }

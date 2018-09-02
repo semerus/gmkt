@@ -12,6 +12,7 @@ public class InputHandler : MonoBehaviour
     public Action OnLeftKey;
     public Action OnRightKey;
     public Action OnInputFinish;
+    public Action OnAnyKeyDown;
 
     public Action OnSpaceDown;
     
@@ -19,6 +20,14 @@ public class InputHandler : MonoBehaviour
 	void Update ()
 	{
 	    if (InputBlock) { return; }
+
+	    if (Input.anyKeyDown)
+	    {
+	        if (OnAnyKeyDown != null)
+	        {
+	            OnAnyKeyDown();
+	        }
+	    }
 
         HandleInput(KeyCode.UpArrow, null, OnUpKey, null);
 	    HandleInput(KeyCode.DownArrow, null, OnDownKey, null);
