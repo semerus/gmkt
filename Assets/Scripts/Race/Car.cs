@@ -36,25 +36,31 @@ public class Car : MonoBehaviour, ITimeHandler
 
     private UIModule uiModule;
 
+    //Audio
+    private AudioSource dragging;
+
     void Start()
     {
         inputHandler = gameObject.GetComponent<InputHandler>();
         TimeSystem.GetTimeSystem().AddTimer(this);
         uiModule = GiraffeSystem.FindModule<UIModule>();
 
+        playerCamera = gameObject.GetComponentInChildren<RaceCamera>();
+        rigidbody = gameObject.GetComponentInChildren<Rigidbody>();
+
         inputHandler.OnUpKey = () => { AddForce(Vector3.back); };
         inputHandler.OnDownKey = () => { AddForce(Vector3.forward); };
         inputHandler.OnLeftKey = () => { AddForce(Vector3.left); };
         inputHandler.OnRightKey = () => { AddForce(Vector3.right); };
-
-        playerCamera = gameObject.GetComponentInChildren<RaceCamera>();
-        rigidbody = gameObject.GetComponentInChildren<Rigidbody>();
-
         inputHandler.OnInputFinish = ProcessForce;
+
+        // audio
+        dragging = gameObject.FindChildByName("Dragging").GetComponent<AudioSource>();
     }
 
     public void RunTime()
     {
+        if(!gameObject.activeSelf) { return; }
         if (UseAddForce)
         {
             DriveUsingAddForce();
@@ -102,6 +108,10 @@ public class Car : MonoBehaviour, ITimeHandler
         transform.Translate(lastEnergy, Space.World);
 
         uiModule.ShowSpeed(lastEnergy.magnitude);
+
+
+
+        ControlDraggingSound(lastEnergy.magnitude > 0.01f);
     }
 
     void DriveUsingAddForce()
@@ -133,6 +143,7 @@ public class Car : MonoBehaviour, ITimeHandler
         }
         rawForcePerFrame = Vector3.zero;
         lastEnergy = Vector3.zero;
+        ControlDraggingSound(false);
     }
 
     public void BlinkCar()
@@ -143,6 +154,23 @@ public class Car : MonoBehaviour, ITimeHandler
     public void ProcessBarrierCollision()
     {
         lastEnergy = lastEnergy * BarrierPenaltyMultiplier;
-        Debug.Log("Safe barrier activated");
+        //Debug.Log("Safe barrier activated");
+    }
+
+    public void ControlDraggingSound(bool play)
+    {
+        if (play)
+        {
+            if (dragging.isPlaying)
+            {
+                return;
+            }
+            dragging.Play();
+        }
+        else
+        {
+            dragging.Stop();
+        }
+        
     }
 }

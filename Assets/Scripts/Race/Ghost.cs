@@ -11,6 +11,10 @@ public class Ghost : MonoBehaviour, ITimeHandler
     private int currentCheckPointIndex;
     private Tween movingTween;
 
+    // audio
+    private AudioSource crying;
+    private AudioSource moving;
+
     void Start()
     {
         var root = GameObject.Find("Root");
@@ -46,6 +50,10 @@ public class Ghost : MonoBehaviour, ITimeHandler
         currentCheckPointIndex = 0;
         transform.position = trackController.StartGo.transform.position;
         gameObject.SetActive(false);
+
+        // audio
+        crying = gameObject.FindChildByName("Cry").GetComponent<AudioSource>();
+        moving = gameObject.FindChildByName("Moving").GetComponent<AudioSource>();
     }
 
     public void SetLoose()
@@ -62,6 +70,7 @@ public class Ghost : MonoBehaviour, ITimeHandler
             targetPosition = trackController.EndGo.transform.position;
         }
 
+        ControlSounds(crying, true);
         RunToTarget();
     }
 
@@ -88,6 +97,8 @@ public class Ghost : MonoBehaviour, ITimeHandler
             }
             // 종료
         });
+
+        ControlSounds(moving, true);
     }
 
     public void StopGhost()
@@ -95,6 +106,26 @@ public class Ghost : MonoBehaviour, ITimeHandler
         if (movingTween != null)
         {
             movingTween.Kill();
+        }
+
+        ControlSounds(moving, false);
+    }
+
+    public void ControlSounds(AudioSource audio, bool play)
+    {
+        if (audio == null)
+        {
+            return;
+        }
+
+        if (play)
+        {
+            if(audio.isPlaying) { return;}
+            audio.Play();
+        }
+        else
+        {
+            audio.Stop();
         }
     }
 }
