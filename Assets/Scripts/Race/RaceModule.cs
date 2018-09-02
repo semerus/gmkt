@@ -21,13 +21,15 @@ public class RaceModule : Module
     private bool isInitialized;
 
     private Race currentRace;
-    private Car player;
+    public Car Player { get; private set; }
     private Ghost ghost;
     private GameObject startPos;
     private GameObject endPos;
 
     [HideInInspector]
     public TrackController TrackController;
+
+    public float Timer;
 
     public override void OnRegister()
     {
@@ -40,7 +42,7 @@ public class RaceModule : Module
         if(isInitialized) { return;}
 
         var root = GameObject.Find("Root");
-        player = root.FindChildByName("Player").GetComponent<Car>();
+        Player = root.FindChildByName("Player").GetComponent<Car>();
         startPos = root.FindChildByName("StartPoint");
         endPos = root.FindChildByName("EndPoint");
         var endCollider = endPos.GetComponent<Collider2D>();
@@ -56,7 +58,9 @@ public class RaceModule : Module
     void StartRace()
     {
         Reset();
-        player.StartCar();
+        Player.StartCar();
+
+        Timer = Time.timeSinceLevelLoad;
 
         DOVirtual.DelayedCall(0.2f, () =>
         {
@@ -72,9 +76,9 @@ public class RaceModule : Module
     void Reset()
     {
         // 이부분도 나중에 플레이어로 옮겨놓기
-        player.transform.position = startPos.transform.position.OverrideY(0.5f);
-        player.transform.localEulerAngles = new Vector3(0f, 180f, 0f);
-        player.gameObject.SetActive(true);
+        Player.transform.position = startPos.transform.position.OverrideY(0.5f);
+        Player.transform.localEulerAngles = new Vector3(0f, 180f, 0f);
+        Player.gameObject.SetActive(true);
 
         ghost.Reset();
 
@@ -82,13 +86,21 @@ public class RaceModule : Module
         {
             pad.Reset();
         }
+
+        InputHandler.InputBlock = false;
+
+        var creditModule = GiraffeSystem.FindModule<CreditModule>();
+        if (creditModule != null)
+        {
+            creditModule.Reset();
+        }
     }
 
     void EndRace()
     {
         Debug.Log("Race Ended");
         //Reset();
-        player.StopCar();
+        Player.StopCar();
         ghost.StopGhost();
     }
 
@@ -109,9 +121,9 @@ public class RaceModule : Module
     void OnEatenByGhost(EatenByGhostMsg msg)
     {
         EndRace();
-        player.playerCamera.ChangeToDeadMode();
+        Player.playerCamera.ChangeToDeadMode();
         
-        player.gameObject.SetActive(false);
+        Player.gameObject.SetActive(false);
 
         new PopupMsg()
         {
@@ -125,5 +137,10 @@ public class RaceModule : Module
     void OnStartRace(StartRaceMsg msg)
     {
         StartRace();
+    }
+
+    public void IncreaseDifficulty()
+    {
+        ghost.SpeedIncreaser = ghost.SpeedIncreaser * 0.99f;
     }
 }

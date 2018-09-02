@@ -12,6 +12,14 @@ public class TutorialModule : Module
     public override void OnRegister()
     {
         base.OnRegister();
+
+        var root = GameObject.Find("Root");
+        tutorialMain = root.FindChildByName("Tutorial");
+        tutorialText = tutorialMain.FindChildByName("Text");
+
+        tutorialMain.SetActive(true);
+        tutorialText.SetActive(false);
+
         CheckFirstTime();
     }
 
@@ -29,10 +37,7 @@ public class TutorialModule : Module
     {
         PlayerPrefs.SetString("TutorialDone", "True");
 
-        var root = GameObject.Find("Root");
         inputHandler.OnAnyKeyDown = EndTutorial;
-        tutorialMain = root.FindChildByName("Tutorial");
-        tutorialText = tutorialMain.FindChildByName("Text");
         tutorialText.SetActive(true);
     }
 

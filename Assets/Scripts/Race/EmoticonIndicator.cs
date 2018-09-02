@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class EmoticonIndicator : MonoBehaviour
 {
-    public int emoteCount = 7;
+    int emoteCount = 8;
     List<Image> emotes = new List<Image>();
 
     void Awake()
@@ -53,5 +53,10 @@ public class EmoticonIndicator : MonoBehaviour
         }
 
         gameObject.SetActive(false);
+    }
+
+    public void SleepEmote()
+    {
+        ChangeEmotes(7);
     }
 }

@@ -5,6 +5,7 @@ using UnityEngine;
 public class Car : MonoBehaviour, ITimeHandler
 {
     public bool UseAddForce = false;
+    public bool isCarStopped;
 
     // translation mode
     [Header("Translation Mode")]
@@ -32,16 +33,17 @@ public class Car : MonoBehaviour, ITimeHandler
     private float frameAccelerationForce;
     private float frameRotationForce;
     //private float actualForce;
-    Vector3 lastEnergy;
+    public Vector3 lastEnergy;
     private float magnitude;
 
     private UIModule uiModule;
 
     //Audio
     private AudioSource dragging;
+    private AudioSource booster;
 
     //Emoticon
-    private EmoticonIndicator indicator;
+    public EmoticonIndicator indicator;
     private int currentLevel = 0;
     private GameObject ghost;
 
@@ -72,11 +74,19 @@ public class Car : MonoBehaviour, ITimeHandler
 
         // audio
         dragging = gameObject.FindChildByName("Dragging").GetComponent<AudioSource>();
+        booster = gameObject.FindChildByName("Booster").GetComponent<AudioSource>();
     }
 
     public void RunTime()
     {
         if(!gameObject.activeSelf) { return; }
+
+        if (isCarStopped)
+        {
+            return;
+
+        }
+
         if (UseAddForce)
         {
             DriveUsingAddForce();
@@ -132,6 +142,7 @@ public class Car : MonoBehaviour, ITimeHandler
 
     public void StartCar()
     {
+        isCarStopped = false;
         if (inputHandler != null)
         {
             inputHandler.enabled = true;
@@ -147,13 +158,10 @@ public class Car : MonoBehaviour, ITimeHandler
 
     public void StopCar()
     {
-        if (inputHandler != null)
-        {
-            inputHandler.enabled = false;
-        }
         rawForcePerFrame = Vector3.zero;
         lastEnergy = Vector3.zero;
         ControlDraggingSound(false);
+        isCarStopped = true;
     }
 
     public void BlinkCar()
@@ -236,6 +244,7 @@ public class Car : MonoBehaviour, ITimeHandler
         var tween = transform.DOLookAt(transform.position + normalized, 1f).SetEase(Ease.InCubic);
         tween.OnComplete(() =>
         {
+            booster.Play();
             transform.localEulerAngles = transform.localEulerAngles.OverrideZ(0f).OverrideX(0f);
             InputHandler.InputBlock = false;
             lastEnergy = -transform.forward * BoosterMultiplier;

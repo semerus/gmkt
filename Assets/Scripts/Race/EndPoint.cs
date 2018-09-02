@@ -13,6 +13,8 @@ public class EndPoint : MonoBehaviour
             {
                 Message = "Well Done!! You escaped!!",
             }.Dispatch();
+
+            new ShowCreditSequenceMsg().Dispatch();
         }
     }
 }

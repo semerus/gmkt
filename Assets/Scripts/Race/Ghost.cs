@@ -5,6 +5,7 @@ using UnityEngine;
 public class Ghost : MonoBehaviour, ITimeHandler
 {
     public float SpeedPerUnit;
+    private float currentSpeedUnit;
     public float SpeedIncreaser = 0.9f;
 
     private Vector3 targetPosition;
@@ -55,6 +56,7 @@ public class Ghost : MonoBehaviour, ITimeHandler
         // audio
         crying = gameObject.FindChildByName("Cry").GetComponent<AudioSource>();
         moving = gameObject.FindChildByName("Moving").GetComponent<AudioSource>();
+        currentSpeedUnit = SpeedPerUnit;
     }
 
     public void SetLoose()
@@ -79,7 +81,8 @@ public class Ghost : MonoBehaviour, ITimeHandler
     {
         transform.LookAt(targetPosition);
         var distance = Vector3.Distance(targetPosition, transform.position);
-        movingTween = transform.DOMove(targetPosition, distance * SpeedPerUnit * SpeedIncreaser);
+        currentSpeedUnit = currentSpeedUnit * SpeedIncreaser;
+        movingTween = transform.DOMove(targetPosition, distance * currentSpeedUnit);
         movingTween.OnComplete(() =>
         {
             if (currentCheckPointIndex < trackController.checkPoints.Count - 1)
