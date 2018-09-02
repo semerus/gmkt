@@ -57,7 +57,7 @@ public class Car : MonoBehaviour, ITimeHandler
         indicator = root.FindChildByName("Billboard").GetComponent<EmoticonIndicator>();
         ghost = root.FindChildByName("Ghost");
 
-        inputHandler.OnUpKey = () => { AddForce(Vector3.back); };
+        //inputHandler.OnUpKey = () => { AddForce(Vector3.back); };
         inputHandler.OnDownKey = () => { AddForce(Vector3.forward); };
         inputHandler.OnLeftKey = () => { AddForce(Vector3.left); };
         inputHandler.OnRightKey = () => { AddForce(Vector3.right); };
