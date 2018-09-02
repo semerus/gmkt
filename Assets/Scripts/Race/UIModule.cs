@@ -18,6 +18,7 @@ public class UIModule : Module
     private Text debugText;
     private Button commonButton;
     private Text speedText;
+    private GameObject needlePivot;
 
     public override void OnRegister()
     {
@@ -37,6 +38,7 @@ public class UIModule : Module
         debugText = root.FindChildByName("DebugText").GetComponent<Text>();
         commonButton = root.FindChildByName("CommonButton").GetComponent<Button>();
         speedText = root.FindChildByName("Speed").GetComponent<Text>();
+        needlePivot = root.FindChildByName("NeedlePivot");
         ClosePopup();
 
         isInitialized = true;
@@ -74,7 +76,10 @@ public class UIModule : Module
     {
         var showSpeed = speed * 3000f;
         var rounded = Mathf.RoundToInt(showSpeed);
-        var adjusted = rounded * 0.1f;
-        speedText.text = adjusted.ToString();
+        var adjusted = rounded * 0.1f; // 60.xx 까지 해석이 됨.
+        var speedMeter = 120 - 4f * adjusted;
+
+        needlePivot.transform.localEulerAngles = new Vector3(0f, 0f, speedMeter);
+        //speedText.text = adjusted.ToString();
     }
 }
