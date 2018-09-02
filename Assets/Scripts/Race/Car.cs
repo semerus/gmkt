@@ -39,6 +39,11 @@ public class Car : MonoBehaviour, ITimeHandler
     //Audio
     private AudioSource dragging;
 
+    //Emoticon
+    private EmoticonIndicator indicator;
+    private int currentLevel = 0;
+    private GameObject ghost;
+
     void Start()
     {
         inputHandler = gameObject.GetComponent<InputHandler>();
@@ -47,6 +52,10 @@ public class Car : MonoBehaviour, ITimeHandler
 
         playerCamera = gameObject.GetComponentInChildren<RaceCamera>();
         rigidbody = gameObject.GetComponentInChildren<Rigidbody>();
+
+        var root = GameObject.Find("Root");
+        indicator = root.FindChildByName("Billboard").GetComponent<EmoticonIndicator>();
+        ghost = root.FindChildByName("Ghost");
 
         inputHandler.OnUpKey = () => { AddForce(Vector3.back); };
         inputHandler.OnDownKey = () => { AddForce(Vector3.forward); };
@@ -69,6 +78,8 @@ public class Car : MonoBehaviour, ITimeHandler
         {
             DriveUsingTranslation();
         }
+
+        ProcessEmotes();
     }
 
     void AddForce(Vector3 direction)
@@ -82,14 +93,6 @@ public class Car : MonoBehaviour, ITimeHandler
         // translation mode
         frameRotationForce = rawForcePerFrame.x * RotationFactor;
         frameAccelerationForce = rawForcePerFrame.z * AccelerationMultiplier;
-        
-        //actualForce = Mathf.Max(0f, Mathf.Min(lastEnergy * FrictionFactor + frameAccelerationForce, MaxTranslationForce));
-        //lastEnergy = actualForce;
-
-        
-        
-        
-        
         
         // momentum mode
         var normalized = rawForcePerFrame.normalized;
@@ -172,5 +175,41 @@ public class Car : MonoBehaviour, ITimeHandler
             dragging.Stop();
         }
         
+    }
+
+    void ProcessEmotes()
+    {
+        if (!ghost.activeSelf)
+        {
+            indicator.ChangeEmotes(0);
+            return;
+        }
+
+        var distance = Vector3.Distance(gameObject.transform.position, ghost.transform.position);
+
+        if (distance < 4f)
+        {
+            indicator.ChangeEmotes(6);
+        }
+        else if(distance < 6f)
+        {
+            indicator.ChangeEmotes(5);
+        }
+        else if (distance < 8f)
+        {
+            indicator.ChangeEmotes(4);
+        }
+        else if (distance < 10f)
+        {
+            indicator.ChangeEmotes(3);
+        }
+        else if(distance < 12f)
+        {
+            indicator.ChangeEmotes(2);
+        }
+        else
+        {
+            indicator.ChangeEmotes(1);
+        }
     }
 }
