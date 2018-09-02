@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using GiraffeStar;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -14,6 +15,9 @@ public class TrackController : MonoBehaviour
 
     private GameObject nodePrefab;
     private GameObject cornerPrefab;
+
+    [HideInInspector]
+    public List<BoosterPad> BoosterPads = new List<BoosterPad>();
 
     public void Setup()
     {
@@ -39,6 +43,9 @@ public class TrackController : MonoBehaviour
         {
             DrawCorner(cornerList[i], cornerList[i + 2], cornerList[i + 1].transform.position);
         }
+
+        var pads = gameObject.GetComponentsInChildren<BoosterPad>();
+        BoosterPads.AddRange(pads);
     }
 
     public void DestroyTrack()
@@ -68,6 +75,11 @@ public class TrackController : MonoBehaviour
         var corner = GameObject.Instantiate(cornerPrefab, transform);
         corner.transform.position = midPoint;
 
+        var booster = corner.GetComponentInChildren<BoosterPad>();
+        booster.NextGo = nextPoint;
+        var leftKeyPos = corner.FindChildByName("LeftKey");
+        var topKeyPos = corner.FindChildByName("TopKey");
+
         var nextPos = nextPoint.transform.position;
         var prevPos = prevPoint.transform.position;
 
@@ -84,12 +96,14 @@ public class TrackController : MonoBehaviour
                 // 아래
                 if (nextXDiff > 0)
                 {
-                    // 오른쪽 끝        
+                    // 오른쪽 끝
+                    booster.TargetPos = leftKeyPos;
                 }
                 else
                 {
                     // 왼쪽 끝
                     corner.transform.localEulerAngles = new Vector3(0f, 90f, 0f);
+                    booster.TargetPos = topKeyPos;
                 }
             }
             else
@@ -99,11 +113,13 @@ public class TrackController : MonoBehaviour
                 {
                     // 오른쪽 끝
                     corner.transform.localEulerAngles = new Vector3(0f, -90f, 0f);
+                    booster.TargetPos = topKeyPos;
                 }
                 else
                 {
                     // 왼쪽 끝
                     corner.transform.localEulerAngles = new Vector3(0f, 180f, 0f);
+                    booster.TargetPos = leftKeyPos;
                 }
             }
         }
@@ -117,11 +133,13 @@ public class TrackController : MonoBehaviour
                 {
                     // 위쪽 끝
                     corner.transform.localEulerAngles = new Vector3(0f, 180f, 0f);
+                    booster.TargetPos = topKeyPos;
                 }
                 else
                 {
                     // 아래 끝
                     corner.transform.localEulerAngles = new Vector3(0f, 90f, 0f);
+                    booster.TargetPos = leftKeyPos;
                 }
             }
             else
@@ -131,10 +149,12 @@ public class TrackController : MonoBehaviour
                 {
                     // 위쪽 끝
                     corner.transform.localEulerAngles = new Vector3(0f, -90f, 0f);
+                    booster.TargetPos = leftKeyPos;
                 }
                 else
                 {
                     // 아래 끝
+                    booster.TargetPos = topKeyPos;
                 }
             }
         }

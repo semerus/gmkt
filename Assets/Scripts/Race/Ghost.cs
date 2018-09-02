@@ -5,6 +5,7 @@ using UnityEngine;
 public class Ghost : MonoBehaviour, ITimeHandler
 {
     public float SpeedPerUnit;
+    public float SpeedIncreaser = 0.9f;
 
     private Vector3 targetPosition;
     private TrackController trackController;
@@ -78,7 +79,7 @@ public class Ghost : MonoBehaviour, ITimeHandler
     {
         transform.LookAt(targetPosition);
         var distance = Vector3.Distance(targetPosition, transform.position);
-        movingTween = transform.DOMove(targetPosition, distance * SpeedPerUnit);
+        movingTween = transform.DOMove(targetPosition, distance * SpeedPerUnit * SpeedIncreaser);
         movingTween.OnComplete(() =>
         {
             if (currentCheckPointIndex < trackController.checkPoints.Count - 1)

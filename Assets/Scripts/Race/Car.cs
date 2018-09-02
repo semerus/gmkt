@@ -1,4 +1,5 @@
-﻿using GiraffeStar;
+﻿using DG.Tweening;
+using GiraffeStar;
 using UnityEngine;
 
 public class Car : MonoBehaviour, ITimeHandler
@@ -44,6 +45,11 @@ public class Car : MonoBehaviour, ITimeHandler
     private int currentLevel = 0;
     private GameObject ghost;
 
+    //Booster
+    private bool isBoosterOn;
+    private bool isCoolDown;
+    public float BoosterMultiplier = 1f;
+
     void Start()
     {
         inputHandler = gameObject.GetComponent<InputHandler>();
@@ -62,6 +68,7 @@ public class Car : MonoBehaviour, ITimeHandler
         inputHandler.OnLeftKey = () => { AddForce(Vector3.left); };
         inputHandler.OnRightKey = () => { AddForce(Vector3.right); };
         inputHandler.OnInputFinish = ProcessForce;
+        inputHandler.OnSpaceDown = TryBooster;
 
         // audio
         dragging = gameObject.FindChildByName("Dragging").GetComponent<AudioSource>();
@@ -211,5 +218,29 @@ public class Car : MonoBehaviour, ITimeHandler
         {
             indicator.ChangeEmotes(1);
         }
+    }
+
+    void TryBooster()
+    {
+        if(!BoosterPad.IsOnBooster) { return; }
+        if(isCoolDown) { return; }
+
+        // 부스터 성공시
+        // 다음 목표 지점 파악
+        var target = BoosterPad.currentPad.NextGo;
+
+        InputHandler.InputBlock = true;
+        
+        lastEnergy = Vector3.zero;
+        var normalized = (BoosterPad.currentPad.TargetPos.transform.position - BoosterPad.currentPad.transform.position).normalized;
+        var tween = transform.DOLookAt(transform.position + normalized, 1f).SetEase(Ease.InCubic);
+        tween.OnComplete(() =>
+        {
+            transform.localEulerAngles = transform.localEulerAngles.OverrideZ(0f).OverrideX(0f);
+            InputHandler.InputBlock = false;
+            lastEnergy = -transform.forward * BoosterMultiplier;
+        });
+
+        //Debug.Log("Try booster");
     }
 }

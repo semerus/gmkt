@@ -5,18 +5,26 @@ using UnityEngine;
 
 public class InputHandler : MonoBehaviour
 {
+    public static bool InputBlock;
+
     public Action OnUpKey;
     public Action OnDownKey;
     public Action OnLeftKey;
     public Action OnRightKey;
     public Action OnInputFinish;
+
+    public Action OnSpaceDown;
     
     // Update is called once per frame
-	void Update () {
+	void Update ()
+	{
+	    if (InputBlock) { return; }
+
         HandleInput(KeyCode.UpArrow, null, OnUpKey, null);
 	    HandleInput(KeyCode.DownArrow, null, OnDownKey, null);
 	    HandleInput(KeyCode.LeftArrow, null, OnLeftKey, null);
 	    HandleInput(KeyCode.RightArrow, null, OnRightKey, null);
+        HandleInput(KeyCode.Space, OnSpaceDown, null, null);
 
 	    if (OnInputFinish != null)
 	    {

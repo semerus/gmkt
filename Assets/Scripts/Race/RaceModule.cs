@@ -77,6 +77,11 @@ public class RaceModule : Module
         player.gameObject.SetActive(true);
 
         ghost.Reset();
+
+        foreach (var pad in TrackController.BoosterPads)
+        {
+            pad.Reset();
+        }
     }
 
     void EndRace()
