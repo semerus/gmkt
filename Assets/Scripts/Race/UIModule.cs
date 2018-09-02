@@ -17,6 +17,7 @@ public class UIModule : Module
     private GameObject popup;
     private Text debugText;
     private Button commonButton;
+    private Text speedText;
 
     public override void OnRegister()
     {
@@ -35,6 +36,7 @@ public class UIModule : Module
         popup = root.FindChildByName("Popup");
         debugText = root.FindChildByName("DebugText").GetComponent<Text>();
         commonButton = root.FindChildByName("CommonButton").GetComponent<Button>();
+        speedText = root.FindChildByName("Speed").GetComponent<Text>();
         ClosePopup();
 
         isInitialized = true;
@@ -66,5 +68,13 @@ public class UIModule : Module
 
         debugText.gameObject.SetActive(true);
         debugText.text = msg.Message;
+    }
+
+    public void ShowSpeed(float speed)
+    {
+        var showSpeed = speed * 3000f;
+        var rounded = Mathf.RoundToInt(showSpeed);
+        var adjusted = rounded * 0.1f;
+        speedText.text = adjusted.ToString();
     }
 }

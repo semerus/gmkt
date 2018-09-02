@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using GiraffeStar;
+using UnityEngine;
 
 public class Car : MonoBehaviour, ITimeHandler
 {
@@ -6,10 +7,15 @@ public class Car : MonoBehaviour, ITimeHandler
 
     // translation mode
     [Header("Translation Mode")]
-    public float AccelerationFactor = 1f;
+    //public float AccelerationFactor = 1f;
+    //public float FrictionFactor = 1f;
+    //public float MaxTranslationForce;
+    public float AccelerationMultiplier;
     public float RotationFactor;
-    public float FrictionFactor = 1f;
-    public float MaxTranslationForce;
+    public float FrictionMultiplier;
+    public float BarrierPenaltyMultiplier;
+    //public float savedMagnitude;
+    //public Vector3 savedDirection;
 
     [Header("AddForce Mode")]
     public float ForceMultiplier = 1f;
@@ -24,14 +30,17 @@ public class Car : MonoBehaviour, ITimeHandler
     private Vector3 momentum;
     private float frameAccelerationForce;
     private float frameRotationForce;
-    private float actualForce;
-    private float lastEnergy;
+    //private float actualForce;
+    Vector3 lastEnergy;
     private float magnitude;
+
+    private UIModule uiModule;
 
     void Start()
     {
         inputHandler = gameObject.GetComponent<InputHandler>();
         TimeSystem.GetTimeSystem().AddTimer(this);
+        uiModule = GiraffeSystem.FindModule<UIModule>();
 
         inputHandler.OnUpKey = () => { AddForce(Vector3.back); };
         inputHandler.OnDownKey = () => { AddForce(Vector3.forward); };
@@ -65,19 +74,19 @@ public class Car : MonoBehaviour, ITimeHandler
     void ProcessForce()
     {
         // translation mode
-        frameAccelerationForce = Mathf.Abs(rawForcePerFrame.z * AccelerationFactor);
         frameRotationForce = rawForcePerFrame.x * RotationFactor;
+        frameAccelerationForce = rawForcePerFrame.z * AccelerationMultiplier;
+        
+        //actualForce = Mathf.Max(0f, Mathf.Min(lastEnergy * FrictionFactor + frameAccelerationForce, MaxTranslationForce));
+        //lastEnergy = actualForce;
 
-        if (lastEnergy * FrictionFactor + frameAccelerationForce > MaxTranslationForce)
-        {
-            //Debug.Log("Reached maximum velocity");
-        }
-        actualForce = Mathf.Max(0f, Mathf.Min(lastEnergy * FrictionFactor + frameAccelerationForce, MaxTranslationForce));
-        lastEnergy = actualForce;
-
+        
+        
+        
+        
+        
         // momentum mode
         var normalized = rawForcePerFrame.normalized;
-
         magnitude = Vector3.Magnitude(rawForcePerFrame * ForceMultiplier);
         magnitude = Mathf.Min(MaximumVelocity, magnitude);
         momentum = normalized * magnitude;
@@ -88,7 +97,11 @@ public class Car : MonoBehaviour, ITimeHandler
     void DriveUsingTranslation()
     {
         transform.Rotate(new Vector3(0f, -frameRotationForce * 10f, 0f));
-        transform.Translate(Vector3.back * actualForce);
+        var frameForce = -transform.forward * frameAccelerationForce;
+        lastEnergy = lastEnergy * FrictionMultiplier + frameForce;
+        transform.Translate(lastEnergy, Space.World);
+
+        uiModule.ShowSpeed(lastEnergy.magnitude);
     }
 
     void DriveUsingAddForce()
@@ -119,10 +132,17 @@ public class Car : MonoBehaviour, ITimeHandler
             inputHandler.enabled = false;
         }
         rawForcePerFrame = Vector3.zero;
+        lastEnergy = Vector3.zero;
     }
 
     public void BlinkCar()
     {
 
+    }
+
+    public void ProcessBarrierCollision()
+    {
+        lastEnergy = lastEnergy * BarrierPenaltyMultiplier;
+        Debug.Log("Safe barrier activated");
     }
 }
